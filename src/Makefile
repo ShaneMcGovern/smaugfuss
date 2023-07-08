@@ -2,7 +2,7 @@ CC      = g++
 #PROF    = -p
 
 #Uncomment to compile in Cygwin
-#CYGWIN = -DCYGWIN
+CYGWIN = -DCYGWIN
 
 #Uncomment the line below if you are getting undefined references to dlsym, dlopen, and dlclose.
 #Comment it out if you get errors about ldl not being found.
@@ -16,7 +16,7 @@ EXPORT_SYMBOLS = -export-dynamic
 #SOLARIS_LINK = -lnsl -lsocket
 
 #IMC2 - Comment out to disable IMC2 support
-IMC = 1
+#IMC = 1
 
 W_FLAGS = -Wall -Werror -Wshadow -Wformat-security -Wpointer-arith -Wcast-align -Wredundant-decls
 
@@ -38,7 +38,7 @@ ifdef IMC
    C_FLAGS := $(C_FLAGS) -DIMC -DIMCSMAUG
 endif
 
-O_FILES := $(patsubst %.c,o/%.o,$(C_FILES))
+
 
 H_FILES = $(wildcard *.h) 
 
@@ -50,6 +50,8 @@ all:
 -include dependencies.d
 
 ifdef CYGWIN
+O_FILES := $(patsubst %.c,%.o,$(C_FILES))
+
 smaug: $(O_FILES)
 	rm -f smaug.exe
 	dlltool --export-all --output-def smaug.def $(O_FILES)
@@ -64,9 +66,14 @@ smaug: $(O_FILES)
 	chmod g+w $(O_FILES)
 
 clean:
-	@rm -f o/*.o smaug.exe dependencies.d resolver.exe resolver.o *~
+	@rm -f *.o smaug.exe dependencies.d resolver.exe resolver.o *~
 
+%.o: %.c
+	echo "  Compiling $@....";
+	$(CC) -c $(C_FLAGS) $< -o $@
 else
+O_FILES := $(patsubst %.c,o/%.o,$(C_FILES))
+
 smaug: $(O_FILES)
 	rm -f smaug
 	$(CC) -export-dynamic -o smaug $(O_FILES) $(L_FLAGS)
@@ -80,6 +87,10 @@ smaug: $(O_FILES)
 
 clean:
 	@rm -f o/*.o smaug dependencies.d resolver resolver.o *~
+
+o/%.o: %.c
+	echo "  Compiling $@....";
+	$(CC) -c $(C_FLAGS) $< -o $@	
 endif
 
 dns: resolver.o
@@ -96,10 +107,6 @@ indent:
 
 indentclean:
 	rm *.c~ *.h~
-
-o/%.o: %.c
-	echo "  Compiling $@....";
-	$(CC) -c $(C_FLAGS) $< -o $@
 
 .c.o: 
 	$(CC) -c $(C_FLAGS) $<
