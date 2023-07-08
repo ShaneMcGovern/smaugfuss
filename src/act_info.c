@@ -3041,7 +3041,7 @@ void do_who(CHAR_DATA *ch, const char *argument)
          snprintf(invis_str, MAX_INPUT_LENGTH, "(%d) ", wch->pcdata->wizinvis);
       else
          invis_str[0] = '\0';
-      snprintf(buf, MAX_STRING_LENGTH, "%*s%-15s %s%s%s%s%s%s%s%s.%s%s%s\r\n",
+      snprintf(buf, MAX_STRING_LENGTH, "%*.338s%-15s %.338s%.338s%.338s%.338s%.338s%.338s%.338s%.338s.%.338s%.338s%.338s\r\n",
                (fGroup ? whogr->indent : 0), "",
                Class,
                invis_str,
