@@ -5101,19 +5101,20 @@ void do_mortalize(CHAR_DATA *ch, const char *argument)
       else if (errno != ENOENT)
       {
          ch_printf(ch, "Unknown error #%d - %s (immortal data). Report to www.smaugmuds.org\r\n", errno,
-                   strerror(errno));
-         snprintf(buf2, MAX_STRING_LENGTH, "%s mortalizing %s", ch->name, buf);
+                   strerror(errno));   
+         // Defensive 32 chr limit for a "name" e.g., Conan the Barbarian (19)               
+         snprintf(buf2, MAX_STRING_LENGTH, "%.32s mortalizing %.4050s", ch->name, buf);
          perror(buf2);
       }
       snprintf(buf2, MAX_STRING_LENGTH, "%s.are", capitalize(argument));
       for (pArea = first_build; pArea; pArea = pArea->next)
          if (!strcmp(pArea->filename, buf2))
          {
-            snprintf(buf, MAX_STRING_LENGTH, "%s%s", BUILD_DIR, buf2);
+            snprintf(buf, MAX_STRING_LENGTH, "%s%.4083s", BUILD_DIR, buf2);
             if (IS_SET(pArea->status, AREA_LOADED))
                fold_area(pArea, buf, FALSE);
             close_area(pArea);
-            snprintf(buf2, MAX_STRING_LENGTH, "%s.bak", buf);
+            snprintf(buf2, MAX_STRING_LENGTH, "%.4091s.bak", buf);
             set_char_color(AT_RED, ch);
             if (!rename(buf, buf2))
                send_to_char("Player's area data destroyed. Area saved as backup.\r\n", ch);
@@ -5121,7 +5122,8 @@ void do_mortalize(CHAR_DATA *ch, const char *argument)
             {
                ch_printf(ch, "Unknown error #%d - %s (area data). Report to www.smaugmuds.org\r\n", errno,
                          strerror(errno));
-               snprintf(buf2, MAX_STRING_LENGTH, "%s mortalizing %s", ch->name, buf);
+               // Defensive 32 chr limit for a "name" e.g., Conan the Barbarian (19)      
+               snprintf(buf2, MAX_STRING_LENGTH, "%.32s mortalizing %.4050s", ch->name, buf);
                perror(buf2);
             }
          }
@@ -5587,8 +5589,8 @@ void do_bestow(CHAR_DATA *ch, const char *argument)
 
    if (arg_buf[strlen(arg_buf) - 1] == ' ')
       arg_buf[strlen(arg_buf) - 1] = '\0';
-
-   snprintf(buf, MAX_STRING_LENGTH, "%s %s", victim->pcdata->bestowments, arg_buf);
+   // Defensive 32 chr limit for a "name" e.g., SOUL PETRIFICATION
+   snprintf(buf, MAX_STRING_LENGTH, "%.32s %.4058s", victim->pcdata->bestowments, arg_buf);
    DISPOSE(victim->pcdata->bestowments);
    smash_tilde(buf);
    victim->pcdata->bestowments = str_dup(buf);
@@ -5979,7 +5981,7 @@ void do_destroy(CHAR_DATA *ch, const char *argument)
       {
          ch_printf(ch, "Unknown error #%d - %s (immortal data). Report to www.smaugmuds.org\r\n", errno,
                    strerror(errno));
-         snprintf(buf2, MAX_STRING_LENGTH, "%s destroying %s", ch->name, buf);
+         snprintf(buf2, MAX_STRING_LENGTH, "%.32s destroying %.4051s", ch->name, buf);
          perror(buf2);
       }
 
@@ -5987,11 +5989,11 @@ void do_destroy(CHAR_DATA *ch, const char *argument)
       for (pArea = first_build; pArea; pArea = pArea->next)
          if (!str_cmp(pArea->filename, buf2))
          {
-            snprintf(buf, MAX_STRING_LENGTH, "%s%s", BUILD_DIR, buf2);
+            snprintf(buf, MAX_STRING_LENGTH, "%.12s%.4083s", BUILD_DIR, buf2);
             if (IS_SET(pArea->status, AREA_LOADED))
                fold_area(pArea, buf, FALSE);
             close_area(pArea);
-            snprintf(buf2, MAX_STRING_LENGTH, "%s.bak", buf);
+            snprintf(buf2, MAX_STRING_LENGTH, "%.4091s.bak", buf);
             set_char_color(AT_RED, ch); /* Log message changes colors */
             if (!rename(buf, buf2))
                send_to_char("Player's area data destroyed.  Area saved as backup.\r\n", ch);
@@ -5999,7 +6001,7 @@ void do_destroy(CHAR_DATA *ch, const char *argument)
             {
                ch_printf(ch, "Unknown error #%d - %s (area data). Report to www.smaugmuds.org\r\n", errno,
                          strerror(errno));
-               snprintf(buf2, MAX_STRING_LENGTH, "%s destroying %s", ch->name, buf);
+               snprintf(buf2, MAX_STRING_LENGTH, "%.32s destroying %.4051s", ch->name, buf);
                perror(buf2);
             }
             break;
@@ -6082,8 +6084,8 @@ const char *name_expand(CHAR_DATA *ch)
    for (rch = ch->in_room->first_person; rch && (rch != ch); rch = rch->next_in_room)
       if (is_name(name, rch->name))
          count++;
-
-   snprintf(outbuf, MAX_INPUT_LENGTH, "%d.%s", count, name);
+   // Assuming %d could be from 1 - 4294967295 ( or 10 chr )
+   snprintf(outbuf, MAX_INPUT_LENGTH, "%d.%.1012s", count, name);
    return outbuf;
 }
 
@@ -7070,7 +7072,7 @@ void do_sedit(CHAR_DATA *ch, const char *argument)
       }
       CREATE(social, SOCIALTYPE, 1);
       social->name = str_dup(arg1);
-      snprintf(arg2, MAX_INPUT_LENGTH, "You %s.", arg1);
+      snprintf(arg2, MAX_INPUT_LENGTH, "You %.1018s.", arg1);
       social->char_no_arg = str_dup(arg2);
       add_social(social);
       send_to_char("Social added.\r\n", ch);
@@ -7388,7 +7390,7 @@ void do_cedit(CHAR_DATA *ch, const char *argument)
       if (*argument)
          one_argument(argument, arg2);
       else
-         snprintf(arg2, MAX_INPUT_LENGTH, "do_%s", arg1);
+         snprintf(arg2, MAX_INPUT_LENGTH, "do_%.1020s", arg1);
       command->do_fun = skill_function(arg2);
       command->fun_name = str_dup(arg2);
       add_command(command);
@@ -7832,7 +7834,7 @@ void do_setclass(CHAR_DATA *ch, const char *argument)
          return;
       }
 
-      snprintf(filename, sizeof(filename), "%s.class", arg1);
+      snprintf(filename, sizeof(filename), "%.249s.class", arg1);
       if (!is_valid_filename(ch, CLASS_DIR, filename))
          return;
 
@@ -7902,7 +7904,7 @@ void do_setclass(CHAR_DATA *ch, const char *argument)
          return;
       }
 
-      snprintf(buf, sizeof(buf), "%s.class", arg1);
+      snprintf(buf, sizeof(buf), "%.249s.class", arg1);
       if (!is_valid_filename(ch, CLASS_DIR, buf))
          return;
 
@@ -8183,7 +8185,7 @@ bool create_new_race(int rcindex, char *argument)
    if (argument[0] != '\0')
       argument[0] = UPPER(argument[0]);
 
-   snprintf(race_table[rcindex]->race_name, 16, "%-.16s", argument);
+   snprintf(race_table[rcindex]->race_name, 16, "%-.15s", argument);
    race_table[rcindex]->class_restriction = 0;
    race_table[rcindex]->str_plus = 0;
    race_table[rcindex]->dex_plus = 0;
@@ -8323,7 +8325,7 @@ void do_setrace(CHAR_DATA *ch, const char *argument)
          return;
       }
 
-      snprintf(buf, sizeof(buf), "%s.race", arg1);
+      snprintf(buf, sizeof(buf), "%.250s.race", arg1);
       if (!is_valid_filename(ch, RACE_DIR, buf))
          return;
 
