@@ -101,5 +101,5 @@ o/%.o: %.c
 	echo "  Compiling $@....";
 	$(CC) -c $(C_FLAGS) $< -o $@
 
-.c.o: mud.h
+.c.o: 
 	$(CC) -c $(C_FLAGS) $<
