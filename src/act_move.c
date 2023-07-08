@@ -245,24 +245,27 @@ void decorate_room(ROOM_INDEX_DATA *room)
          len = strlen(buf);
          if (len == 0)
          {
-            switch (number_range(1, 2 * (iRand == nRand - 1) ? 1 : 2))
+            int maxRange = (iRand == nRand - 1) ? 2 : 4;
+            int minRange = (maxRange == 2) ? 1 : 3;
+
+            switch (number_range(minRange, maxRange))
             {
-            case 1:
-               pre = "You notice ";
-               post = ".";
-               break;
-            case 2:
-               pre = "You see ";
-               post = ".";
-               break;
-            case 3:
-               pre = "You see ";
-               post = ", and ";
-               break;
-            case 4:
-               pre = "You notice ";
-               post = ", and ";
-               break;
+               case 1:
+                  pre = "You notice ";
+                  post = ".";
+                  break;
+               case 2:
+                  pre = "You see ";
+                  post = ".";
+                  break;
+               case 3:
+                  pre = "You see ";
+                  post = ", and ";
+                  break;
+               case 4:
+                  pre = "You notice ";
+                  post = ", and ";
+                  break;
             }
             snprintf(buf2, MAX_STRING_LENGTH, "%s%s%s", pre, room_sents[sector][x], post);
          }
