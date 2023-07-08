@@ -330,7 +330,7 @@ void do_watch(CHAR_DATA *ch, const char *argument)
        * so I do a str_cmp to make sure it finds the right player --Gorog
        */
 
-      snprintf(buf, MAX_INPUT_LENGTH, "0.%s", arg2);
+      snprintf(buf, MAX_INPUT_LENGTH, "0.%.1021s", arg2);
       if ((vic = get_char_world(ch, buf))) /* if vic is in game now */
          if ((!IS_NPC(vic)) && !str_cmp(arg2, vic->name))
             SET_BIT(vic->pcdata->flags, PCFLAG_WATCH);
@@ -3526,25 +3526,27 @@ void do_balzhur(CHAR_DATA *ch, const char *argument)
    else if (errno != ENOENT)
    {
       ch_printf(ch, "Unknown error #%d - %s (immortal data). Report to www.smaugmuds.org\r\n", errno, strerror(errno));
-      snprintf(buf2, MAX_STRING_LENGTH, "%s balzhuring %s", ch->name, buf);
+      // TODO: adjust for max len of ch->name v. 50/50 split
+      snprintf(buf2, MAX_STRING_LENGTH, "%.2041s balzhuring %.2042s", ch->name, buf);
       perror(buf2);
    }
    snprintf(buf2, MAX_STRING_LENGTH, "%s.are", name);
    for (pArea = first_build; pArea; pArea = pArea->next)
       if (!str_cmp(pArea->filename, buf2))
       {
-         snprintf(buf, MAX_STRING_LENGTH, "%s%s", BUILD_DIR, buf2);
+         snprintf(buf, MAX_STRING_LENGTH, "%s%.4083s", BUILD_DIR, buf2);
          if (IS_SET(pArea->status, AREA_LOADED))
             fold_area(pArea, buf, FALSE);
          close_area(pArea);
-         snprintf(buf2, MAX_STRING_LENGTH, "%s.bak", buf);
+         snprintf(buf2, MAX_STRING_LENGTH, "%.4091s.bak", buf);
          set_char_color(AT_RED, ch); /* Log message changes colors */
          if (!rename(buf, buf2))
             send_to_char("Player's area data destroyed.  Area saved as backup.\r\n", ch);
          else if (errno != ENOENT)
          {
             ch_printf(ch, "Unknown error #%d - %s (area data). Report to www.smaugmuds.org\r\n", errno, strerror(errno));
-            snprintf(buf2, MAX_STRING_LENGTH, "%s destroying %s", ch->name, buf);
+            // TODO: adjust for max len of ch->name v. 50/50 split
+            snprintf(buf2, MAX_STRING_LENGTH, "%.2041s destroying %.2042s", ch->name, buf);
             perror(buf2);
          }
          break;
