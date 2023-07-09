@@ -2013,7 +2013,8 @@ void nanny_get_old_password(DESCRIPTOR_DATA *d, char *argument)
 {
    CHAR_DATA *ch;
    char buf[MAX_STRING_LENGTH];
-   bool fOld, chk;
+   // bool fOld;
+   bool chk;
 
    ch = d->character;
    write_to_buffer(d, "\r\n", 2);
@@ -2049,7 +2050,7 @@ void nanny_get_old_password(DESCRIPTOR_DATA *d, char *argument)
    d->character->desc = NULL;
    free_char(d->character);
    d->character = NULL;
-   fOld = load_char_obj(d, buf, FALSE, FALSE);
+   // fOld = load_char_obj(d, buf, FALSE, FALSE);
    ch = d->character;
    if (ch->position == POS_FIGHTING || ch->position == POS_EVASIVE || ch->position == POS_DEFENSIVE || ch->position == POS_AGGRESSIVE || ch->position == POS_BERSERK)
       ch->position = POS_STANDING;
@@ -3129,8 +3130,8 @@ void act(short AType, const char *format, CHAR_DATA *ch, const void *arg1, const
 #define ACTF_CH BV01
 #define ACTF_OBJ BV02
 
-   const OBJ_DATA *obj1 = (const OBJ_DATA *)arg1;
-   const OBJ_DATA *obj2 = (const OBJ_DATA *)arg2;
+   // const OBJ_DATA *obj1 = (const OBJ_DATA *)arg1;
+   // const OBJ_DATA *obj2 = (const OBJ_DATA *)arg2;
    int flags1 = ACTF_NONE, flags2 = ACTF_NONE;
 
    /*
@@ -3162,14 +3163,14 @@ void act(short AType, const char *format, CHAR_DATA *ch, const void *arg1, const
 
          case 't':
             flags1 |= ACTF_TXT;
-            obj1 = NULL;
+            // obj1 = NULL;
             break;
 
          case 'T':
          case 'd':
             flags2 |= ACTF_TXT;
             vch = NULL;
-            obj2 = NULL;
+            // obj2 = NULL;
             break;
 
          case 'n':
@@ -3185,7 +3186,7 @@ void act(short AType, const char *format, CHAR_DATA *ch, const void *arg1, const
          case 'S':
          case 'Q':
             flags2 |= ACTF_CH;
-            obj2 = NULL;
+            // obj2 = NULL;
             break;
 
          case 'p':
@@ -3203,14 +3204,14 @@ void act(short AType, const char *format, CHAR_DATA *ch, const void *arg1, const
    if (flags1 != ACTF_NONE && flags1 != ACTF_TXT && flags1 != ACTF_CH && flags1 != ACTF_OBJ)
    {
       bug("%s: arg1 has more than one type in format %s. Setting all NULL.", __FUNCTION__, format);
-      obj1 = NULL;
+      // obj1 = NULL;
    }
 
    if (flags2 != ACTF_NONE && flags2 != ACTF_TXT && flags2 != ACTF_CH && flags2 != ACTF_OBJ)
    {
       bug("%s: arg2 has more than one type in format %s. Setting all NULL.", __FUNCTION__, format);
       vch = NULL;
-      obj2 = NULL;
+      // obj2 = NULL;
    }
 
    if (!ch->in_room)
