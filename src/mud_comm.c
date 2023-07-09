@@ -1548,7 +1548,7 @@ void do_mpbodybag(CHAR_DATA *ch, const char *argument)
       return;
    }
 
-   snprintf(buf2, MAX_STRING_LENGTH, "the corpse of %s", arg);
+   snprintf(buf2, MAX_STRING_LENGTH, "the corpse of %.4081s", arg);
    for (obj = first_object; obj; obj = obj->next)
    {
       if (obj->in_room && obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC && !str_cmp(buf2, obj->short_descr))
@@ -1562,7 +1562,7 @@ void do_mpbodybag(CHAR_DATA *ch, const char *argument)
     * Maybe should just make the command logged... Shrug I am not sure
     * * --Shaddai
     */
-   snprintf(buf4, MAX_STRING_LENGTH, "Mpbodybag: Grabbed %s", buf2);
+   snprintf(buf4, MAX_STRING_LENGTH, "Mpbodybag: Grabbed %.4076s", buf2);
    progbug(buf4, ch);
    return;
 }
