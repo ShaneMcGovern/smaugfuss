@@ -5633,10 +5633,10 @@ void do_slice(CHAR_DATA *ch, const char *argument)
    OBJ_DATA *corpse;
    OBJ_DATA *obj;
    OBJ_DATA *slice;
-   bool found;
+   // bool found;
    MOB_INDEX_DATA *pMobIndex;
    char buf[MAX_STRING_LENGTH];
-   found = FALSE;
+   // found = FALSE;
 
    /*
     * Noticed that it was checking gsn_kick.  Bug report by Li'l Lukey
