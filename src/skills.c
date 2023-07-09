@@ -1742,7 +1742,7 @@ void do_sset(CHAR_DATA *ch, const char *argument)
    {
       if ((sn = skill_lookup(arg1)) >= 0)
       {
-         snprintf(arg1, MAX_INPUT_LENGTH, "%d %s %s", sn, arg2, argument);
+         snprintf(arg1, MAX_INPUT_LENGTH, "%d %.504s %.504s", sn, arg2, argument);
          do_sset(ch, arg1);
       }
       else
