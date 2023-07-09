@@ -4072,7 +4072,9 @@ bool check_tumble(CHAR_DATA *ch, CHAR_DATA *victim)
 
    if (victim->Class != CLASS_THIEF || !IS_AWAKE(victim))
       return FALSE;
-   if (!IS_NPC(victim) && !victim->pcdata->learned[gsn_tumble] > 0)
+   // logical NOT has higher precedence than >
+   // if (!IS_NPC(victim) && !victim->pcdata->learned[gsn_tumble] > 0)
+   if (!IS_NPC(victim) && victim->pcdata->learned[gsn_tumble] <= 0)
       return FALSE;
    if (IS_NPC(victim))
       chances = UMIN(60, 2 * victim->level);
